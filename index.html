@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contrat de la Triade</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --nuit: #0d0614;
+        --velours: #1e0b2b;
+        --prune: #3b1450;
+        --violet: #8e44ad;
+        --lilas: #c39bd3;
+        --rose: #e8a0bf;
+        --argent: #dcdde1;
+        --argent-sombre: #9a9aa8;
+        --verre: rgba(40, 14, 58, 0.55);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+        font-family: 'Cormorant Garamond', Georgia, serif;
+        font-size: 19px;
+        color: var(--argent);
+        background:
+            radial-gradient(ellipse at top, #2a0f3d 0%, transparent 60%),
+            radial-gradient(ellipse at bottom right, #3d0f2e 0%, transparent 55%),
+            var(--nuit);
+        min-height: 100vh;
+        overflow-x: hidden;
+    }
+
+    /* Motif dentelle en fond */
+    body::before {
+        content: '';
+        position: fixed; inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='none' stroke='%23c39bd3' stroke-opacity='0.07' stroke-width='1'%3E%3Ccircle cx='40' cy='40' r='18'/%3E%3Ccircle cx='40' cy='40' r='8'/%3E%3Cpath d='M40 0v80M0 40h80M12 12l56 56M68 12L12 68'/%3E%3Ccircle cx='0' cy='0' r='18'/%3E%3Ccircle cx='80' cy='0' r='18'/%3E%3Ccircle cx='0' cy='80' r='18'/%3E%3Ccircle cx='80' cy='80' r='18'/%3E%3C/g%3E%3C/svg%3E");
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    /* Orbes de fumée */
+    .orb {
+        position: fixed;
+        border-radius: 50%;
+        filter: blur(80px);
+        opacity: 0.35;
+        pointer-events: none;
+        z-index: 0;
+        animation: drift 22s ease-in-out infinite alternate;
+    }
+    .orb.o1 { width: 420px; height: 420px; background: var(--violet); top: -120px; left: -120px; }
+    .orb.o2 { width: 360px; height: 360px; background: #b03a6f; bottom: -100px; right: -80px; animation-delay: -8s; }
+    .orb.o3 { width: 260px; height: 260px; background: var(--lilas); top: 40%; left: 55%; opacity: 0.15; animation-delay: -14s; }
+
+    @keyframes drift {
+        0% { transform: translate(0, 0) scale(1); }
+        100% { transform: translate(60px, 40px) scale(1.15); }
+    }
+
+    /* Paillettes montantes */
+    .sparkle {
+        position: fixed;
+        bottom: -10px;
+        width: 4px; height: 4px;
+        background: var(--argent);
+        border-radius: 50%;
+        box-shadow: 0 0 8px var(--rose);
+        pointer-events: none;
+        z-index: 1;
+        animation: rise linear infinite;
+    }
+    @keyframes rise {
+        0% { transform: translateY(0) scale(0.6); opacity: 0; }
+        15% { opacity: 0.9; }
+        100% { transform: translateY(-105vh) scale(1.2); opacity: 0; }
+    }
+
+    /* En-tête & onglets */
+    header {
+        position: sticky; top: 0;
+        z-index: 50;
+        background: rgba(13, 6, 20, 0.85);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(195, 155, 211, 0.25);
+    }
+    .progress { height: 2px; background: linear-gradient(90deg, var(--violet), var(--rose)); width: 0; transition: width .6s ease; }
+    nav.tabs {
+        display: flex;
+        gap: 4px;
+        overflow-x: auto;
+        padding: 10px 16px;
+        scrollbar-width: none;
+        justify-content: center;
+    }
+    nav.tabs::-webkit-scrollbar { display: none; }
+    .tab {
+        flex-shrink: 0;
+        background: none;
+        border: 1px solid transparent;
+        color: var(--argent-sombre);
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 0.95em;
+        letter-spacing: 1px;
+        padding: 6px 14px;
+        border-radius: 999px;
+        cursor: pointer;
+        transition: all .3s ease;
+    }
+    .tab:hover { color: var(--argent); border-color: rgba(195,155,211,.35); }
+    .tab.active {
+        color: var(--nuit);
+        background: linear-gradient(135deg, var(--lilas), var(--rose));
+        font-weight: 600;
+    }
+
+    main {
+        position: relative;
+        z-index: 2;
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 50px 24px 140px;
+    }
+
+    .page { display: none; }
+    .page.active { display: block; animation: reveal .9s cubic-bezier(.2,.7,.2,1); }
+    @keyframes reveal {
+        from { opacity: 0; transform: translateY(24px); filter: blur(6px); }
+        to { opacity: 1; transform: none; filter: none; }
+    }
+
+    /* Typographie */
+    h1, h2 { font-family: 'Cinzel Decorative', serif; text-align: center; }
+    h1 {
+        font-size: clamp(2em, 6vw, 3.6em);
+        background: linear-gradient(120deg, var(--argent) 0%, var(--rose) 40%, var(--lilas) 60%, var(--argent) 100%);
+        background-size: 250% auto;
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        animation: shimmer 6s linear infinite;
+        margin-bottom: 10px;
+    }
+    @keyframes shimmer { to { background-position: 250% center; } }
+
+    .subtitle {
+        text-align: center;
+        font-style: italic;
+        color: var(--lilas);
+        letter-spacing: 3px;
+        margin-bottom: 40px;
+    }
+
+    h2 {
+        font-size: clamp(1.5em, 4.5vw, 2.3em);
+        color: var(--rose);
+        margin-bottom: 8px;
+    }
+    .ornament {
+        text-align: center;
+        color: var(--lilas);
+        letter-spacing: 10px;
+        margin-bottom: 36px;
+        opacity: .8;
+    }
+
+    /* Emblème de la triade */
+    .emblem { display: flex; justify-content: center; margin: 20px 0 40px; }
+    .emblem svg { width: 200px; height: 200px; animation: spin 40s linear infinite; }
+    .emblem .core { animation: spin 40s linear infinite reverse; transform-origin: 100px 100px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .preamble {
+        background: var(--verre);
+        border: 1px solid rgba(232,160,191,.3);
+        border-radius: 18px;
+        padding: 30px;
+        font-style: italic;
+        line-height: 1.8;
+        text-align: center;
+        backdrop-filter: blur(6px);
+    }
+
+    /* Articles */
+    .article {
+        position: relative;
+        background: var(--verre);
+        border: 1px solid rgba(195,155,211,.18);
+        border-radius: 16px;
+        padding: 22px 24px 22px 70px;
+        margin-bottom: 18px;
+        line-height: 1.7;
+        backdrop-filter: blur(6px);
+        transition: transform .35s ease, border-color .35s ease, box-shadow .35s ease;
+    }
+    .article:hover {
+        transform: translateY(-3px);
+        border-color: rgba(232,160,191,.55);
+        box-shadow: 0 10px 30px rgba(142,68,173,.25);
+    }
+    .article .num {
+        position: absolute;
+        left: 18px; top: 22px;
+        width: 38px; height: 38px;
+        border-radius: 50%;
+        display: grid; place-items: center;
+        font-family: 'Cinzel Decorative', serif;
+        font-size: .72em;
+        color: var(--nuit);
+        background: linear-gradient(135deg, var(--argent), var(--lilas));
+        box-shadow: 0 0 12px rgba(195,155,211,.5);
+    }
+    .article .title {
+        display: block;
+        font-weight: 600;
+        color: var(--rose);
+        margin-bottom: 4px;
+        letter-spacing: .5px;
+    }
+
+    .section-title {
+        font-family: 'Cinzel Decorative', serif;
+        text-align: center;
+        color: var(--lilas);
+        letter-spacing: 2px;
+        margin: 34px 0 18px;
+    }
+    .limit-card { border-color: rgba(232,160,191,.55); background: rgba(80, 18, 60, 0.5); }
+    .limit-card .num { background: linear-gradient(135deg, var(--rose), #b03a6f); color: #fff; }
+
+    /* Safewords */
+    .lights { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 28px; }
+    .light {
+        border-radius: 16px;
+        padding: 24px 18px;
+        text-align: center;
+        background: var(--verre);
+        border: 1px solid rgba(255,255,255,.1);
+    }
+    .light .dot {
+        width: 46px; height: 46px; border-radius: 50%;
+        margin: 0 auto 12px;
+        animation: beat 2.4s ease-in-out infinite;
+    }
+    .light.rouge .dot { background: #e74c3c; box-shadow: 0 0 25px #e74c3c; }
+    .light.orange .dot { background: #f39c12; box-shadow: 0 0 25px #f39c12; animation-delay: .4s; }
+    .light.vert .dot { background: #2ecc71; box-shadow: 0 0 25px #2ecc71; animation-delay: .8s; }
+    .light strong { font-family: 'Cinzel Decorative', serif; display: block; margin-bottom: 6px; }
+    @keyframes beat { 0%,100% { transform: scale(1); } 50% { transform: scale(1.12); } }
+
+    /* Limites */
+    .limits { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
+    .limits th {
+        font-family: 'Cinzel Decorative', serif;
+        font-size: .8em;
+        color: var(--lilas);
+        text-align: left;
+        padding: 0 14px;
+    }
+    .limits td {
+        background: var(--verre);
+        padding: 14px;
+        border-top: 1px solid rgba(195,155,211,.15);
+        border-bottom: 1px solid rgba(195,155,211,.15);
+    }
+    .limits td:first-child { border-left: 1px solid rgba(195,155,211,.15); border-radius: 12px 0 0 12px; }
+    .limits td:last-child { border-right: 1px solid rgba(195,155,211,.15); border-radius: 0 12px 12px 0; }
+    .blank { display: block; min-height: 26px; border-bottom: 1px dashed rgba(220,221,225,.35); }
+
+    /* Signatures */
+    .signatures { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 18px; margin-top: 30px; }
+    .sig {
+        background: var(--verre);
+        border: 1px solid rgba(232,160,191,.35);
+        border-radius: 18px;
+        padding: 22px;
+        text-align: center;
+    }
+    .sig .role { font-family: 'Cinzel Decorative', serif; color: var(--rose); margin-bottom: 4px; }
+    .sig .crown { font-size: 1.6em; margin-bottom: 6px; }
+    .sig .field { margin-top: 18px; text-align: left; font-size: .9em; color: var(--argent-sombre); }
+    .sig .field span { display: block; min-height: 34px; border-bottom: 1px dashed var(--lilas); }
+    .closing { text-align: center; font-style: italic; color: var(--lilas); margin-top: 34px; line-height: 1.7; }
+
+    /* Navigation basse */
+    .bottom-nav {
+        position: fixed;
+        bottom: 22px; left: 50%;
+        transform: translateX(-50%);
+        display: flex; align-items: center; gap: 14px;
+        z-index: 60;
+        background: rgba(13,6,20,.8);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(195,155,211,.3);
+        border-radius: 999px;
+        padding: 8px 10px;
+    }
+    .bottom-nav button {
+        width: 46px; height: 46px;
+        border-radius: 50%;
+        border: none;
+        cursor: pointer;
+        font-size: 1.2em;
+        color: var(--nuit);
+        background: linear-gradient(135deg, var(--lilas), var(--rose));
+        transition: transform .25s ease, opacity .25s ease;
+    }
+    .bottom-nav button:hover:not(:disabled) { transform: scale(1.1); }
+    .bottom-nav button:disabled { opacity: .3; cursor: not-allowed; }
+    .bottom-nav .count { min-width: 64px; text-align: center; color: var(--argent); letter-spacing: 2px; font-size: .95em; }
+
+    @media (max-width: 600px) {
+        body { font-size: 17px; }
+        main { padding: 34px 16px 130px; }
+        nav.tabs { justify-content: flex-start; }
+        .article { padding: 64px 18px 18px; }
+        .article .num { top: 16px; left: 18px; }
+    }
+</style>
+</head>
+<body>
+<div class="orb o1"></div>
+<div class="orb o2"></div>
+<div class="orb o3"></div>
+
+<header>
+    <div class="progress" id="progress"></div>
+    <nav class="tabs" id="tabs"></nav>
+</header>
+
+<main>
+
+<!-- 1. Préambule -->
+<section class="page active" data-title="Préambule">
+    <h1>La Triade</h1>
+    <p class="subtitle">Contrat entre deux Dominantes et un soumis</p>
+
+    <div class="emblem">
+        <svg viewBox="0 0 200 200">
+            <defs>
+                <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0" stop-color="#dcdde1"/>
+                    <stop offset=".5" stop-color="#e8a0bf"/>
+                    <stop offset="1" stop-color="#8e44ad"/>
+                </linearGradient>
+            </defs>
+            <circle cx="100" cy="100" r="92" fill="none" stroke="url(#g)" stroke-width="1.2" stroke-dasharray="4 6"/>
+            <circle cx="100" cy="100" r="78" fill="none" stroke="url(#g)" stroke-width=".8"/>
+            <g class="core" fill="none" stroke="url(#g)" stroke-width="2">
+                <circle cx="100" cy="72" r="30"/>
+                <circle cx="76" cy="114" r="30"/>
+                <circle cx="124" cy="114" r="30"/>
+                <circle cx="100" cy="100" r="6" fill="#e8a0bf" stroke="none"/>
+            </g>
+        </svg>
+    </div>
+
+    <div class="preamble">
+        « Ce contrat n'a aucune valeur juridique. Il formalise un engagement librement consenti entre trois adultes — deux Dominantes et un soumis — afin d'établir un cadre clair, des limites respectées et une confiance durable. Il ne pourra jamais être utilisé pour nuire à l'une des parties. Chacun·e peut y mettre fin à tout moment. »
+    </div>
+</section>
+
+<!-- 2. Principes communs -->
+<section class="page" data-title="Principes">
+    <h2>Principes Communs</h2>
+    <div class="ornament">✦ ✦ ✦</div>
+
+    <div class="article"><span class="num">1.1</span><span class="title">Consentement</span>Le consentement des trois parties est libre, éclairé, enthousiaste et révocable à tout moment, sans justification ni conséquence.</div>
+    <div class="article"><span class="num">1.2</span><span class="title">Honnêteté</span>Aucun mensonge n'est toléré au sein de la relation, ni entre les Dominantes, ni envers le soumis, ni de la part du soumis.</div>
+    <div class="article"><span class="num">1.3</span><span class="title">Respect</span>Le respect entre les trois parties est constant. Le manque de respect, l'humiliation non consentie ou la moquerie prise au premier degré ne sont pas tolérés.</div>
+    <div class="article"><span class="num">1.4</span><span class="title">Limites</span>Les limites physiques, émotionnelles et mentales de chacun·e sont non négociables et doivent être respectées en toutes circonstances.</div>
+    <div class="article"><span class="num">1.5</span><span class="title">Confidentialité</span>Tout ce qui est partagé au sein de la Triade reste privé. Rien ne peut être divulgué à un tiers sans l'accord des trois parties.</div>
+    <div class="article"><span class="num">1.6</span><span class="title">Nouvelles expériences</span>Toute nouvelle pratique doit être discutée et approuvée par les trois parties au préalable. Un seul refus suffit à l'écarter.</div>
+    <div class="article"><span class="num">1.7</span><span class="title">Modification</span>Le contrat peut être révisé à tout moment, uniquement avec l'accord des trois parties. Une relecture commune est prévue régulièrement.</div>
+    <div class="article"><span class="num">1.8</span><span class="title">Exclusivité</span>Toute relation BDSM en dehors de la Triade doit être discutée et validée par les trois parties.</div>
+    <div class="article"><span class="num">1.9</span><span class="title">Vie réelle</span>La dynamique ne doit jamais mettre en péril la santé, le travail, les finances ou les relations familiales et amicales de quiconque.</div>
+</section>
+
+<!-- 3. Dynamique à trois -->
+<section class="page" data-title="La Triade">
+    <h2>La Dynamique à Trois</h2>
+    <div class="ornament">✦ ✦ ✦</div>
+
+    <div class="article"><span class="num">2.1</span><span class="title">Autorité partagée</span>Les deux Dominantes exercent une autorité égale sur le soumis, sauf répartition différente convenue entre elles et inscrite ci-dessous.</div>
+    <div class="article"><span class="num">2.2</span><span class="title">Accord des Dominantes</span>Les Dominantes se concertent sur les règles, punitions et récompenses importantes. En cas de désaccord, la décision la plus prudente prévaut.</div>
+    <div class="article"><span class="num">2.3</span><span class="title">Ordres contradictoires</span>Si le soumis reçoit deux ordres incompatibles, il le signale respectueusement. Il ne peut être puni pour cela ; il revient aux Dominantes de trancher.</div>
+    <div class="article"><span class="num">2.4</span><span class="title">Pas de mise en concurrence</span>Le soumis ne cherche jamais à opposer les Dominantes entre elles, et les Dominantes ne mettent pas le soumis en position de devoir choisir l'une contre l'autre.</div>
+    <div class="article"><span class="num">2.5</span><span class="title">Séances en solo</span>Chaque Dominante peut mener une séance seule avec le soumis, dans le cadre déjà validé par les trois. L'autre Dominante en est informée.</div>
+    <div class="article"><span class="num">2.6</span><span class="title">Équilibre & jalousie</span>Les trois parties veillent à un équilibre d'attention. Tout sentiment de jalousie ou de mise à l'écart doit être exprimé calmement et discuté ensemble.</div>
+    <div class="article"><span class="num">2.7</span><span class="title">Point mensuel</span>Une discussion hors-dynamique, d'égal à égal, a lieu au moins une fois par mois pour faire le bilan et ajuster le contrat.</div>
+</section>
+
+<!-- 4. Safewords -->
+<section class="page" data-title="Safewords">
+    <h2>Safewords</h2>
+    <div class="ornament">✦ ✦ ✦</div>
+
+    <div class="lights">
+        <div class="light rouge"><div class="dot"></div><strong>Rouge</strong>Arrêt immédiat de la séance et retrait de tout lien.</div>
+        <div class="light orange"><div class="dot"></div><strong>Orange</strong>Ralentir, faire une pause et vérifier que tout va bien.</div>
+        <div class="light vert"><div class="dot"></div><strong>Vert</strong>Tout va bien, la séance peut continuer.</div>
+    </div>
+
+    <div class="article"><span class="num">3.1</span><span class="title">Signal non verbal</span>Si le soumis ne peut pas parler, il utilise le signal convenu : <em>trois tapes</em> ou <em>lâcher l'objet tenu en main</em>. Il équivaut au Rouge.</div>
+    <div class="article"><span class="num">3.2</span><span class="title">Pour tout le monde</span>Les safewords peuvent être utilisés par les trois parties, Dominantes comprises.</div>
+    <div class="article"><span class="num">3.3</span><span class="title">Aucune sanction</span>L'usage d'un safeword ne peut jamais entraîner de punition, de reproche ou de déception exprimée.</div>
+    <div class="article"><span class="num">3.4</span><span class="title">Discussion après coup</span>Après un Rouge ou un Orange, un moment d'échange a lieu une fois le calme revenu, sans obligation de se justifier sur le moment.</div>
+    <div class="article"><span class="num">3.5</span><span class="title">Vérification</span>Les Dominantes demandent régulièrement la couleur pendant les séances intenses. Le soumis répond honnêtement.</div>
+</section>
+
+<!-- 5. Le soumis -->
+<section class="page" data-title="Le Soumis">
+    <h2>Le Soumis</h2>
+    <div class="ornament">✦ ✦ ✦</div>
+
+    <div class="article"><span class="num">4.1</span><span class="title">Acceptation</span>Le soumis accepte librement l'autorité des deux Dominantes signataires, dans le cadre et les limites de ce contrat.</div>
+    <div class="article"><span class="num">4.2</span><span class="title">Formules</span>Il s'adresse aux Dominantes en les vouvoyant et en employant le titre « Maîtresse » suivi de leur nom, sauf en présence de tiers ou de la famille.</div>
+    <div class="article"><span class="num">4.3</span><span class="title">Respect</span>Il ne manque jamais de respect aux Dominantes : pas d'insulte, de menace, de chantage ni de mot grossier à leur égard.</div>
+    <div class="article"><span class="num">4.4</span><span class="title">Dévotion</span>Il s'engage à respecter, écouter et être dévoué aux deux Dominantes de manière égale.</div>
+    <div class="article"><span class="num">4.5</span><span class="title">Communication</span>Il communique dès qu'un élément le perturbe, l'agace ou le met mal à l'aise, plutôt que de le garder pour lui.</div>
+    <div class="article"><span class="num">4.6</span><span class="title">Santé</span>Il informe les Dominantes de tout problème de santé physique ou mentale pouvant avoir un impact sur les séances.</div>
+    <div class="article"><span class="num">4.7</span><span class="title">Bienveillance envers lui-même</span>Il lui est interdit de se dénigrer ou de se mettre en danger, physiquement, émotionnellement ou mentalement.</div>
+    <div class="article"><span class="num">4.8</span><span class="title">Plaisir</span>Il ne s'accorde aucun plaisir sexuel personnel sans l'autorisation d'au moins une des Dominantes, selon les règles convenues entre elles.</div>
+    <div class="article"><span class="num">4.9</span><span class="title">Contact</span>Le corps des Dominantes lui est strictement interdit d'accès (voir article 5.9).</div>
+    <div class="article"><span class="num">4.10</span><span class="title">Droit inaliénable</span>Quelles que soient les règles, le soumis conserve toujours le droit de dire non, d'utiliser un safeword et de quitter la relation.</div>
+</section>
+
+<!-- 6. Les Dominantes -->
+<section class="page" data-title="Les Dominantes">
+    <h2>Les Dominantes</h2>
+    <div class="ornament">✦ ✦ ✦</div>
+
+    <div class="article"><span class="num">5.1</span><span class="title">Bienveillance</span>Les Dominantes agissent toujours dans l'intérêt et le bien-être du soumis, jamais dans le but de lui nuire.</div>
+    <div class="article"><span class="num">5.2</span><span class="title">Responsabilité</span>Elles sont responsables de la sécurité physique et émotionnelle du soumis pendant et après chaque séance.</div>
+    <div class="article"><span class="num">5.3</span><span class="title">Aftercare</span>L'aftercare est obligatoire après chaque séance : présence, eau, douceur, mots rassurants et échange sur le ressenti.</div>
+    <div class="article"><span class="num">5.4</span><span class="title">Limites</span>Elles respectent strictement les limites dures du soumis et ne franchissent une limite souple qu'après discussion et accord explicite.</div>
+    <div class="article"><span class="num">5.5</span><span class="title">Coordination</span>Elles se tiennent informées mutuellement des ordres donnés, des punitions et de l'état émotionnel du soumis.</div>
+    <div class="article"><span class="num">5.6</span><span class="title">Équité</span>Elles veillent à ne pas faire peser sur le soumis leurs éventuels désaccords personnels.</div>
+    <div class="article"><span class="num">5.7</span><span class="title">Punitions</span>Les punitions sont proportionnées, annoncées, jamais violentes au-delà des pratiques consenties et jamais appliquées sous le coup de la colère.</div>
+    <div class="article"><span class="num">5.8</span><span class="title">Reconnaissance</span>Elles reconnaissent et récompensent les efforts et la dévotion du soumis.</div>
+
+    <div class="section-title">— Limites des Dominantes —</div>
+
+    <div class="article limit-card"><span class="num">5.9</span><span class="title">Corps interdit</span>Le corps des Dominantes est strictement interdit d'accès. Aucun contact n'est autorisé de la part du soumis.</div>
+    <div class="article limit-card"><span class="num">5.10</span><span class="title">Sentiments</span>Si des sentiments se développent entre deux des parties de la Triade, une discussion doit obligatoirement avoir lieu entre les trois avant toute autre décision.</div>
+</section>
+
+<!-- 7. Limites -->
+<section class="page" data-title="Limites">
+    <h2>Limites</h2>
+    <div class="ornament">✦ ✦ ✦</div>
+
+    <div class="article"><span class="num">6.1</span><span class="title">Définitions</span><em>Limite dure</em> : jamais, sous aucun prétexte. <em>Limite souple</em> : à aborder seulement après discussion et accord explicite.</div>
+
+    <table class="limits">
+        <thead><tr><th>Personne</th><th>Limites dures</th><th>Limites souples</th></tr></thead>
+        <tbody>
+            <tr><td>Dominante I</td><td>Corps strictement interdit d'accès</td><td>Sentiments : discussion obligatoire</td></tr>
+            <tr><td>Dominante II</td><td>Corps strictement interdit d'accès</td><td>Sentiments : discussion obligatoire</td></tr>
+            <tr><td>Soumis</td><td><span class="blank"></span></td><td><span class="blank"></span></td></tr>
+        </tbody>
+    </table>
+</section>
+
+<!-- 8. Rituels -->
+<section class="page" data-title="Rituels">
+    <h2>Rituels &amp; Protocole</h2>
+    <div class="ornament">✦ ✦ ✦</div>
+
+    <div class="article"><span class="num">7.1</span><span class="title">Salutation</span>Chaque matin, le soumis salue ses Dominantes : <em>« Bonjour Maîtresses, je suis à votre écoute aujourd'hui. »</em></div>
+    <div class="article"><span class="num">7.2</span><span class="title">Mot du soir</span>Chaque soir, il adresse à chacune un mot de gratitude, différent chaque jour.</div>
+    <div class="article"><span class="num">7.3</span><span class="title">Symbole</span>Un collier ou bracelet, choisi ensemble par les deux Dominantes, rappelle son engagement envers la Triade.</div>
+    <div class="article"><span class="num">7.4</span><span class="title">Entrée en séance</span>Avant chaque séance, un court rituel défini par les Dominantes marque le passage dans la dynamique (posture, phrase d'ouverture, rappel des couleurs).</div>
+    <div class="article"><span class="num">7.5</span><span class="title">Journal</span>Le soumis tient un journal de ses ressentis, partagé avec les Dominantes lors du point mensuel ou à leur demande.</div>
+    <div class="article"><span class="num">7.6</span><span class="title">Oubli</span>L'oubli d'un rituel donne lieu à un rappel à l'ordre, pas nécessairement à une punition.</div>
+    <div class="article"><span class="num">7.7</span><span class="title">Système de points</span>Un système de points récompense le bon comportement et encadre les conséquences, toujours non violentes en dehors des séances.</div>
+</section>
+
+<!-- 9. Signatures -->
+<section class="page" data-title="Signatures">
+    <h2>Engagement</h2>
+    <div class="ornament">✦ ✦ ✦</div>
+
+    <div class="article"><span class="num">8.1</span><span class="title">Durée</span>Ce contrat prend effet à la date de la dernière signature et reste valable jusqu'à sa révision ou sa résiliation.</div>
+    <div class="article"><span class="num">8.2</span><span class="title">Résiliation</span>Chacune des trois parties peut mettre fin au contrat à tout moment. Une dernière discussion bienveillante est alors proposée, sans obligation.</div>
+
+    <div class="signatures">
+        <div class="sig">
+            <div class="crown">♛</div>
+            <div class="role">Dominante I</div>
+            <div class="field">Nom<span></span></div>
+            <div class="field">Signature — « Lu et approuvé »<span></span></div>
+            <div class="field">Date<span></span></div>
+        </div>
+        <div class="sig">
+            <div class="crown">♛</div>
+            <div class="role">Dominante II</div>
+            <div class="field">Nom<span></span></div>
+            <div class="field">Signature — « Lu et approuvé »<span></span></div>
+            <div class="field">Date<span></span></div>
+        </div>
+        <div class="sig">
+            <div class="crown">⚷</div>
+            <div class="role">Soumis</div>
+            <div class="field">Nom<span></span></div>
+            <div class="field">Signature — « Lu et approuvé »<span></span></div>
+            <div class="field">Date<span></span></div>
+        </div>
+    </div>
+
+    <p class="closing">Trois volontés, un seul cadre.<br>Le contrat prend effet dès que les trois signatures sont apposées.</p>
+</section>
+
+</main>
+
+<div class="bottom-nav">
+    <button id="prev" aria-label="Page précédente">‹</button>
+    <div class="count" id="count">1 / 9</div>
+    <button id="next" aria-label="Page suivante">›</button>
+</div>
+
+<script>
+    const pages = [...document.querySelectorAll('.page')];
+    const tabs = document.getElementById('tabs');
+    let current = 0;
+
+    pages.forEach((p, i) => {
+        const b = document.createElement('button');
+        b.className = 'tab';
+        b.textContent = p.dataset.title;
+        b.onclick = () => go(i);
+        tabs.appendChild(b);
+    });
+
+    function go(i) {
+        if (i < 0 || i >= pages.length) return;
+        pages[current].classList.remove('active');
+        current = i;
+        pages[current].classList.add('active');
+        [...tabs.children].forEach((t, j) => t.classList.toggle('active', j === current));
+        tabs.children[current].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        document.getElementById('count').textContent = `${current + 1} / ${pages.length}`;
+        document.getElementById('prev').disabled = current === 0;
+        document.getElementById('next').disabled = current === pages.length - 1;
+        document.getElementById('progress').style.width = ((current + 1) / pages.length * 100) + '%';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    document.getElementById('prev').onclick = () => go(current - 1);
+    document.getElementById('next').onclick = () => go(current + 1);
+    document.addEventListener('keydown', e => {
+        if (e.key === 'ArrowLeft') go(current - 1);
+        if (e.key === 'ArrowRight') go(current + 1);
+    });
+
+    // Glissement tactile sur mobile
+    let startX = null;
+    document.addEventListener('touchstart', e => startX = e.touches[0].clientX, { passive: true });
+    document.addEventListener('touchend', e => {
+        if (startX === null) return;
+        const dx = e.changedTouches[0].clientX - startX;
+        if (Math.abs(dx) > 70) go(current + (dx < 0 ? 1 : -1));
+        startX = null;
+    });
+
+    // Paillettes
+    for (let i = 0; i < 28; i++) {
+        const s = document.createElement('div');
+        s.className = 'sparkle';
+        s.style.left = Math.random() * 100 + 'vw';
+        s.style.animationDuration = (8 + Math.random() * 10) + 's';
+        s.style.animationDelay = (-Math.random() * 18) + 's';
+        const size = 2 + Math.random() * 3;
+        s.style.width = s.style.height = size + 'px';
+        document.body.appendChild(s);
+    }
+
+    go(0);
+</script>
+</body>
+</html>
